@@ -1,0 +1,100 @@
+import type { ContactChannel, ServicePackage } from "./types";
+
+export const SITE_CONFIG = {
+  brandName: "TP91tool",
+  ownerHandle: "tuanphuc2004",
+  repoUrl: "https://github.com/tuanphuc2004/TP91tool",
+  email: "hoangphuc9102004@gmail.com",
+  contacts: [
+    {
+      channel: "zalo" as ContactChannel,
+      label: "Zalo",
+      value: "Chat trực tiếp qua Zalo",
+      href: "https://zalo.me/0900000000",
+      placeholderNote: "Cập nhật số Zalo của bạn tại src/lib/site-config.ts",
+    },
+    {
+      channel: "telegram" as ContactChannel,
+      label: "Telegram",
+      value: "@tuanphuc2004",
+      href: "https://t.me/tuanphuc2004",
+      placeholderNote: "Cập nhật username Telegram tại src/lib/site-config.ts",
+    },
+    {
+      channel: "facebook" as ContactChannel,
+      label: "Facebook",
+      value: "fb.com/tuanphuc2004",
+      href: "https://facebook.com/tuanphuc2004",
+      placeholderNote: "Cập nhật link Facebook tại src/lib/site-config.ts",
+    },
+    {
+      channel: "email" as ContactChannel,
+      label: "Email",
+      value: "hoangphuc9102004@gmail.com",
+      href: "mailto:hoangphuc9102004@gmail.com",
+      placeholderNote: null,
+    },
+  ],
+  paymentGuide: {
+    title: "Thanh toán linh hoạt không qua trung gian",
+    note: "Sau khi gửi đơn, bạn có thể nhắn trực tiếp qua Zalo, Telegram, Facebook hoặc Email kèm mã đơn để nhận source code, tài liệu cài đặt và hỗ trợ triển khai.",
+  },
+  budgetPresets: [
+    "Dưới 2 triệu",
+    "2 - 5 triệu",
+    "5 - 10 triệu",
+    "Trên 10 triệu",
+    "Thỏa thuận",
+  ] as const,
+  timelinePresets: [
+    "Gấp (3 - 5 ngày)",
+    "Tiêu chuẩn (1 - 2 tuần)",
+    "Mở rộng (2 - 4 tuần)",
+    "Linh hoạt",
+  ] as const,
+  servicePackages: [
+    {
+      id: "landing" as ServicePackage,
+      name: "Landing Page & Portfolio",
+      summary: "Trang giới thiệu sản phẩm, thương hiệu hoặc hồ sơ cá nhân chuẩn SEO, tốc độ cao.",
+      baseDays: 3,
+      defaultBudget: "Dưới 2 triệu",
+    },
+    {
+      id: "ecommerce" as ServicePackage,
+      name: "Web Bán Hàng & Đặt Đơn",
+      summary: "Catalog sản phẩm, lọc tìm kiếm, giỏ/đơn hàng, quản trị Supabase và deploy Vercel.",
+      baseDays: 7,
+      defaultBudget: "2 - 5 triệu",
+    },
+    {
+      id: "webapp" as ServicePackage,
+      name: "Web App / SaaS & Admin",
+      summary: "Ứng dụng web đầy đủ phân quyền, biểu đồ, dashboard quản trị và cơ sở dữ liệu.",
+      baseDays: 12,
+      defaultBudget: "5 - 10 triệu",
+    },
+    {
+      id: "tool" as ServicePackage,
+      name: "Tool Tự Động Hóa & Tiện Ích",
+      summary: "Công cụ xử lý dữ liệu, CLI, script hoặc tiện ích web chạy nhanh trên trình duyệt.",
+      baseDays: 5,
+      defaultBudget: "2 - 5 triệu",
+    },
+    {
+      id: "custom" as ServicePackage,
+      name: "Dự Án Theo Yêu Cầu Riêng",
+      summary: "Kiến trúc may đo theo bài toán riêng, tích hợp API mở và hạ tầng tối ưu chi phí.",
+      baseDays: 10,
+      defaultBudget: "Thỏa thuận",
+    },
+  ],
+  estimatorFeatures: [
+    { id: "auth", label: "Đăng nhập & Phân quyền (Supabase Auth)", extraDays: 2 },
+    { id: "database", label: "Cơ sở dữ liệu & Trang Admin CRUD", extraDays: 3 },
+    { id: "demo", label: "Interactive Live Demo / Sandbox", extraDays: 2 },
+    { id: "seo", label: "Tối ưu SEO kỹ thuật & OpenGraph", extraDays: 1 },
+    { id: "motion", label: "Hiệu ứng chuyển động mượt (Motion)", extraDays: 1 },
+    { id: "export", label: "Xuất báo cáo CSV / JSON / PDF", extraDays: 2 },
+  ] as const,
+} as const;

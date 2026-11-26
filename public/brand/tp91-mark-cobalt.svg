@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-label="TP91.tool cobalt mark">
+  <rect width="128" height="128" rx="28" fill="#2563EB" />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M24 28H60V41H48.5V100H35.5V41H24V28ZM66 28H81.5C93.9264 28 104 38.0736 104 50.5C104 62.9264 93.9264 73 81.5 73H79V100H66V28ZM79 41V60H81.5C86.7467 60 91 55.7467 91 50.5C91 45.2533 86.7467 41 81.5 41H79Z"
+    fill="#FFFFFF"
+  />
+  <circle cx="94.5" cy="90.5" r="9.5" fill="#DBEAFE" />
+</svg>
