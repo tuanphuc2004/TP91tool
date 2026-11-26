@@ -23,7 +23,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import type { CatalogItem, CatalogKind, DemoKey } from "@/lib/types";
+import type { CatalogItem, CatalogKind } from "@/lib/types";
 
 interface ItemFormSheetProps {
   open: boolean;
@@ -44,7 +44,6 @@ export function ItemFormSheet({ open, onOpenChange, editingItem }: ItemFormSheet
     editingItem?.tech_stack.join(", ") ?? "Next.js 16, Tailwind v4, Supabase"
   );
   const [featuresText, setFeaturesText] = useState(editingItem?.features.join("\n") ?? "");
-  const [demoKey, setDemoKey] = useState<string>(editingItem?.demo_key ?? "none");
   const [demoUrl, setDemoUrl] = useState(editingItem?.demo_url ?? "");
   const [installCommand, setInstallCommand] = useState(editingItem?.install_command ?? "");
   const [downloadUrl, setDownloadUrl] = useState(editingItem?.download_url ?? "");
@@ -76,7 +75,7 @@ export function ItemFormSheet({ open, onOpenChange, editingItem }: ItemFormSheet
           .split("\n")
           .map((s) => s.trim())
           .filter(Boolean),
-        demo_key: demoKey === "none" ? null : (demoKey as DemoKey),
+        demo_key: null,
         demo_url: demoUrl,
         install_command: installCommand,
         download_url: downloadUrl,
@@ -218,31 +217,14 @@ export function ItemFormSheet({ open, onOpenChange, editingItem }: ItemFormSheet
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="item-demokey">Nhúng Live Demo</Label>
-              <Select value={demoKey} onValueChange={setDemoKey}>
-                <SelectTrigger id="item-demokey">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Không nhúng</SelectItem>
-                  <SelectItem value="landing-showcase">Landing Builder</SelectItem>
-                  <SelectItem value="dashboard-tool">Mini POS & Export</SelectItem>
-                  <SelectItem value="skill-inspector">SKILL.md Inspector</SelectItem>
-                  <SelectItem value="project-estimator">Ước tính làm Web</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="item-demourl">Link Demo ngoài (tùy chọn)</Label>
-              <Input
-                id="item-demourl"
-                value={demoUrl}
-                onChange={(e) => setDemoUrl(e.target.value)}
-                placeholder="https://..."
-              />
-            </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="item-demourl">Link trang thực tế (tùy chọn)</Label>
+            <Input
+              id="item-demourl"
+              value={demoUrl}
+              onChange={(e) => setDemoUrl(e.target.value)}
+              placeholder="https://..."
+            />
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

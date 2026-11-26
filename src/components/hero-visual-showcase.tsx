@@ -3,23 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight, Calculator, FileCode2, Table2 } from "lucide-react";
+import { ArrowUpRight, Layers, Sparkles, Wrench } from "lucide-react";
 
-const QUICK_DEMOS = [
+const QUICK_HIGHLIGHTS = [
   {
-    href: "/services?demo=dashboard-tool#demo-lab",
-    label: "Demo Mini POS & Export",
-    icon: Table2,
+    href: "/marketplace",
+    label: "Kho Dự án & Tool",
+    icon: Wrench,
   },
   {
-    href: "/services?demo=skill-inspector#demo-lab",
-    label: "Kiểm tra SKILL.md",
-    icon: FileCode2,
+    href: "/skills",
+    label: "Skill & Plugin miễn phí",
+    icon: Sparkles,
   },
   {
-    href: "/services?demo=project-estimator#demo-lab",
-    label: "Ước tính làm Web",
-    icon: Calculator,
+    href: "/services",
+    label: "Ước tính & Đặt làm Web",
+    icon: Layers,
   },
 ] as const;
 
@@ -52,34 +52,34 @@ export function HeroVisualShowcase() {
         >
           <div>
             <p className="text-sm font-semibold text-foreground">
-              4 Live Demo tương tác chạy thật
+              Hệ sinh thái TP91tool
             </p>
             <p className="text-xs text-muted-foreground">
-              Kiểm chứng trực tiếp chất lượng trước khi đặt làm web hoặc mua tool
+              Source code gọn sạch, chia sẻ skill miễn phí và nhận làm web theo yêu cầu
             </p>
           </div>
           <Link
-            href="/services#demo-lab"
+            href="/marketplace"
             className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-colors hover:bg-primary hover:text-primary-foreground whitespace-nowrap"
           >
-            Mở phòng Demo
+            Xem kho sản phẩm
             <ArrowUpRight className="size-3.5" />
           </Link>
         </motion.div>
       </motion.div>
 
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-        {QUICK_DEMOS.map((demo) => {
-          const Icon = demo.icon;
+        {QUICK_HIGHLIGHTS.map((item) => {
+          const Icon = item.icon;
           return (
             <Link
-              key={demo.href}
-              href={demo.href}
+              key={item.href}
+              href={item.href}
               className="group flex items-center justify-between gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 text-xs font-medium text-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xs"
             >
               <span className="flex items-center gap-2 truncate">
                 <Icon className="size-4 text-primary shrink-0" />
-                <span className="truncate">{demo.label}</span>
+                <span className="truncate">{item.label}</span>
               </span>
               <ArrowUpRight className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary shrink-0" />
             </Link>

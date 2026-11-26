@@ -5,10 +5,6 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft, CheckCircle2, ExternalLink } from "lucide-react";
 import { CopyCommandButton } from "@/components/copy-command-button";
-import { DashboardToolDemo } from "@/components/demos/dashboard-tool-demo";
-import { LandingShowcaseDemo } from "@/components/demos/landing-showcase-demo";
-import { ProjectEstimatorDemo } from "@/components/demos/project-estimator-demo";
-import { SkillInspectorDemo } from "@/components/demos/skill-inspector-demo";
 import { FreeDownloadButton } from "@/components/free-download-button";
 import { OrderDialog } from "@/components/order-dialog";
 import { SiteFooter } from "@/components/site-footer";
@@ -29,21 +25,6 @@ function getCoverImage(kind: string) {
   return "/images/hero-showcase.jpg";
 }
 
-function EmbeddedDemo({ demoKey }: { demoKey: string }) {
-  switch (demoKey) {
-    case "landing-showcase":
-      return <LandingShowcaseDemo />;
-    case "dashboard-tool":
-      return <DashboardToolDemo />;
-    case "skill-inspector":
-      return <SkillInspectorDemo />;
-    case "project-estimator":
-      return <ProjectEstimatorDemo />;
-    default:
-      return null;
-  }
-}
-
 async function ItemDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = await getItemBySlug(slug);
@@ -54,6 +35,9 @@ async function ItemDetailContent({ params }: { params: Promise<{ slug: string }>
 
   const isFree = item.price_vnd === 0 || item.kind === "skill" || item.kind === "plugin";
   const backHref = item.kind === "skill" || item.kind === "plugin" ? "/skills" : "/marketplace";
+  const hasExternalPreview =
+    Boolean(item.demo_url) &&
+    (item.demo_url!.startsWith("http://") || item.demo_url!.startsWith("https://"));
 
   return (
     <div className="space-y-8">
@@ -122,13 +106,6 @@ async function ItemDetailContent({ params }: { params: Promise<{ slug: string }>
               </pre>
             </div>
           )}
-
-          {item.demo_key && (
-            <div className="space-y-4 rounded-2xl border border-border bg-card p-6">
-              <h2 className="text-lg font-semibold text-foreground">Live Demo tương tác</h2>
-              <EmbeddedDemo demoKey={item.demo_key} />
-            </div>
-          )}
         </div>
 
         <aside className="space-y-4 lg:col-span-4">
@@ -153,10 +130,10 @@ async function ItemDetailContent({ params }: { params: Promise<{ slug: string }>
                 <OrderDialog item={item} size="lg" className="w-full" />
               )}
 
-              {item.demo_url && !item.demo_key && (
+              {hasExternalPreview && (
                 <Button asChild variant="outline" className="w-full">
-                  <a href={item.demo_url} target="_blank" rel="noopener noreferrer">
-                    Mở Demo ngoài
+                  <a href={item.demo_url!} target="_blank" rel="noopener noreferrer">
+                    Xem trang thực tế
                     <ExternalLink className="size-4" />
                   </a>
                 </Button>

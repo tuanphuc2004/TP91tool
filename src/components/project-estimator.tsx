@@ -10,7 +10,7 @@ import type { ServicePackage } from "@/lib/types";
 import { estimateProjectScope } from "@/lib/validators";
 import { cn } from "@/lib/utils";
 
-interface ProjectEstimatorDemoProps {
+interface ProjectEstimatorProps {
   onApplyEstimate?: (selection: {
     servicePackage: ServicePackage;
     selectedFeatures: string[];
@@ -19,7 +19,7 @@ interface ProjectEstimatorDemoProps {
   }) => void;
 }
 
-export function ProjectEstimatorDemo({ onApplyEstimate }: ProjectEstimatorDemoProps) {
+export function ProjectEstimator({ onApplyEstimate }: ProjectEstimatorProps) {
   const [pkg, setPkg] = useState<ServicePackage>("ecommerce");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(["database", "seo"]);
 

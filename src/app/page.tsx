@@ -15,7 +15,6 @@ import {
 import { CatalogCard } from "@/components/catalog-card";
 import { CatalogGridSkeleton } from "@/components/catalog-skeleton";
 import { CopyCommandButton } from "@/components/copy-command-button";
-import { ProjectEstimatorDemo } from "@/components/demos/project-estimator-demo";
 import { FreeDownloadButton } from "@/components/free-download-button";
 import { HeroVisualShowcase } from "@/components/hero-visual-showcase";
 import {
@@ -23,6 +22,7 @@ import {
   MotionFadeIn,
   ScrollStaggerGrid,
 } from "@/components/motion-primitives";
+import { ProjectEstimator } from "@/components/project-estimator";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -38,8 +38,8 @@ const WORKFLOW_STEPS = [
   },
   {
     step: "Bước 02",
-    title: "Kiểm tra Live Demo thật",
-    desc: "Trải nghiệm tốc độ, giao diện và tương tác thực tế ngay trên trình duyệt.",
+    title: "Trao đổi & Chốt giải pháp",
+    desc: "Thống nhất giao diện, chức năng và tiến độ triển khai phù hợp nhu cầu thực tế.",
   },
   {
     step: "Bước 03",
@@ -178,7 +178,7 @@ export default function HomePage() {
                 Dự án Web, Tool và Kho Skill sẵn sàng triển khai
               </h1>
               <p className="hero-stagger max-w-md text-base leading-relaxed text-muted-foreground">
-                Mua dự án và tool hoàn chỉnh, tải skill miễn phí, hoặc đặt làm web có demo chạy thật.
+                Mua dự án và tool hoàn chỉnh, tải skill miễn phí, hoặc đặt làm web theo yêu cầu.
               </p>
               <div className="hero-stagger flex flex-wrap items-center gap-3 pt-1">
                 <Button asChild size="lg" className="active:scale-[0.97]">
@@ -250,14 +250,14 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Section 3: Custom Web Service + 3 Steps + Live Estimator */}
+        {/* Section 3: Custom Web Service + 3 Steps + Scope Estimator */}
         <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
           <MotionFadeIn className="mb-10 space-y-2">
             <span className="inline-flex items-center rounded-full border border-primary/20 bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               Nhận làm Web theo yêu cầu
             </span>
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Ước tính phạm vi & xem Demo chức năng trước khi đặt
+              Ước tính phạm vi & lộ trình trước khi đặt
             </h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
               Tự chọn loại web và tính năng bên dưới để xem stack 100% miễn phí vận hành, thời gian bàn giao và mức ngân sách gợi ý.
@@ -277,7 +277,7 @@ export default function HomePage() {
             ))}
           </ScrollStaggerGrid>
 
-          <ProjectEstimatorDemo />
+          <ProjectEstimator />
         </section>
 
         {/* Section 4: Direct Contact Strip */}

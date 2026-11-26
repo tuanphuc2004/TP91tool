@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, CheckCircle2, Loader2, Send } from "lucide-react";
 import { submitProjectRequestAction } from "@/app/actions/public";
-import { DemoLab } from "@/components/demos/demo-lab";
+import { ProjectEstimator } from "@/components/project-estimator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { SITE_CONFIG } from "@/lib/site-config";
-import type { ContactChannel, DemoKey, ServicePackage } from "@/lib/types";
+import type { ContactChannel, ServicePackage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialDemo?: DemoKey }) {
+export function ServicesWorkspace() {
   const [servicePackage, setServicePackage] = useState<ServicePackage>("ecommerce");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(["database", "seo"]);
   const [budgetRange, setBudgetRange] = useState<string>(SITE_CONFIG.budgetPresets[1]);
@@ -89,18 +89,18 @@ export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialD
   }
 
   return (
-    <div className="space-y-20">
-      <section id="demo-lab" className="space-y-5 scroll-mt-24">
+    <div className="space-y-16">
+      <section id="estimator" className="space-y-5 scroll-mt-24">
         <div className="space-y-1.5">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-            Phòng Live Demo chức năng thật
+            Bộ ước tính phạm vi & công nghệ
           </h2>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Trải nghiệm trực tiếp các tính năng web thực tế ngay trên trình duyệt trước khi đặt làm dự án.
+            Chọn loại dự án và tính năng để xem stack miễn phí đề xuất, rồi bấm áp dụng xuống form bên dưới.
           </p>
         </div>
 
-        <DemoLab initialDemo={initialDemo} onApplyEstimate={handleApplyEstimate} />
+        <ProjectEstimator onApplyEstimate={handleApplyEstimate} />
       </section>
 
       <section

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | TP91tool",
   },
   description:
-    "Kho dự án web, công cụ tiện ích, chia sẻ AI skill & plugin miễn phí và dịch vụ nhận làm web có live demo tương tác bởi tuanphuc2004.",
+    "Kho dự án web, công cụ tiện ích, chia sẻ AI skill & plugin miễn phí và dịch vụ nhận làm web theo yêu cầu bởi tuanphuc2004.",
   icons: {
     icon: "/favicon.svg",
   },

@@ -92,7 +92,7 @@ export const SITE_CONFIG = {
   estimatorFeatures: [
     { id: "auth", label: "Đăng nhập & Phân quyền (Supabase Auth)", extraDays: 2 },
     { id: "database", label: "Cơ sở dữ liệu & Trang Admin CRUD", extraDays: 3 },
-    { id: "demo", label: "Interactive Live Demo / Sandbox", extraDays: 2 },
+    { id: "analytics", label: "Bảng điều khiển & Thống kê số liệu", extraDays: 2 },
     { id: "seo", label: "Tối ưu SEO kỹ thuật & OpenGraph", extraDays: 1 },
     { id: "motion", label: "Hiệu ứng chuyển động mượt (Motion)", extraDays: 1 },
     { id: "export", label: "Xuất báo cáo CSV / JSON / PDF", extraDays: 2 },

@@ -55,7 +55,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link href="/services" className="transition-colors hover:text-primary">
-                  Nhận làm Web & Live Demo
+                  Nhận làm Web theo yêu cầu
                 </Link>
               </li>
               <li>

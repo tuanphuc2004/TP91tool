@@ -20,7 +20,6 @@ const NAV_ITEMS = [
   { href: "/marketplace", label: "Dự án & Tool" },
   { href: "/skills", label: "Skill & Plugin" },
   { href: "/services", label: "Nhận làm Web" },
-  { href: "/services#demo-lab", label: "Demo" },
   { href: "/admin", label: "Admin" },
 ] as const;
 
@@ -31,11 +30,9 @@ function NavLinksMarkup({ pathname }: { pathname: string }) {
       className="hidden items-center gap-1 md:flex"
     >
       {NAV_ITEMS.map((item) => {
-        const baseHref = item.href.split("#")[0];
         const active =
           pathname.length > 0 &&
-          baseHref !== "/" &&
-          (pathname === baseHref || pathname.startsWith(`${baseHref}/`));
+          (pathname === item.href || pathname.startsWith(`${item.href}/`));
         return (
           <Link
             key={item.href}
