@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { adminSignOutAction } from "@/app/actions/admin";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -46,7 +45,7 @@ async function AdminContent() {
 
   const supabase = await createServerSupabaseClient();
   if (!supabase) {
-    redirect("/admin/login");
+    redirect("/login?next=/admin");
   }
 
   const {
@@ -54,25 +53,12 @@ async function AdminContent() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/admin/login");
+    redirect("/login?next=/admin");
   }
 
+  // Hide Admin page completely from non-admin accounts
   if (!isAdminUser(user)) {
-    return (
-      <div className="mx-auto max-w-lg space-y-4">
-        <Alert variant="destructive">
-          <AlertTitle>Không có quyền quản trị (403)</AlertTitle>
-          <AlertDescription className="mt-1 text-xs">
-            Tài khoản {user.email} chưa được cấp <code>app_metadata.role = &quot;admin&quot;</code> trong Supabase Auth.
-          </AlertDescription>
-        </Alert>
-        <form action={adminSignOutAction}>
-          <Button type="submit" variant="outline">
-            Đăng xuất tài khoản này
-          </Button>
-        </form>
-      </div>
-    );
+    notFound();
   }
 
   const [items, orders, requests] = await Promise.all([

@@ -44,6 +44,11 @@ export function SiteFooter() {
             <h3 className="text-sm font-semibold text-foreground">Điều hướng</h3>
             <ul className="mt-3.5 space-y-2.5 text-sm text-muted-foreground">
               <li>
+                <Link href="/" className="transition-colors hover:text-primary">
+                  Trang chủ
+                </Link>
+              </li>
+              <li>
                 <Link href="/marketplace" className="transition-colors hover:text-primary">
                   Dự án & Tool
                 </Link>
@@ -56,11 +61,6 @@ export function SiteFooter() {
               <li>
                 <Link href="/services" className="transition-colors hover:text-primary">
                   Nhận làm Web theo yêu cầu
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin" className="transition-colors hover:text-primary">
-                  Quản trị Admin
                 </Link>
               </li>
             </ul>
