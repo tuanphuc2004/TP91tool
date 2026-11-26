@@ -1,9 +1,11 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Terminal, ArrowUpRight } from "lucide-react";
+import { motion } from "motion/react";
+import { ArrowUpRight, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -39,12 +41,19 @@ function NavLinksMarkup({ pathname }: { pathname: string }) {
             key={item.href}
             href={item.href}
             className={cn(
-              "rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors",
+              "relative rounded-lg px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors",
               active
-                ? "bg-accent text-accent-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
+            {active && (
+              <motion.span
+                layoutId="header-nav-pill"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                className="absolute inset-0 -z-10 rounded-lg bg-accent"
+              />
+            )}
             {item.label}
           </Link>
         );
@@ -62,16 +71,21 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 h-16 w-full border-b border-border bg-card/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 h-16 w-full border-b border-border/80 bg-card/85 backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-semibold tracking-tight text-foreground shrink-0"
+          className="flex items-center shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Trang chủ TP91tool"
         >
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Terminal className="size-4" strokeWidth={2} />
-          </span>
-          <span className="text-base font-semibold tracking-tight">TP91tool</span>
+          <Image
+            src="/brand/tp91-logo-light.svg"
+            alt="TP91.tool"
+            width={132}
+            height={41}
+            priority
+            className="h-9 w-auto"
+          />
         </Link>
 
         <Suspense fallback={<NavLinksMarkup pathname="" />}>
@@ -79,7 +93,11 @@ export function SiteHeader() {
         </Suspense>
 
         <div className="flex items-center gap-2 shrink-0">
-          <Button asChild size="sm" className="hidden sm:inline-flex whitespace-nowrap">
+          <Button
+            asChild
+            size="sm"
+            className="hidden sm:inline-flex whitespace-nowrap transition-transform active:scale-[0.97]"
+          >
             <Link href="/services#request-form">
               Đặt làm Web
               <ArrowUpRight className="size-4" />
@@ -99,23 +117,28 @@ export function SiteHeader() {
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-left">
-                  <Terminal className="size-4 text-primary" />
-                  TP91tool
+                <SheetTitle className="flex items-center text-left">
+                  <Image
+                    src="/brand/tp91-logo-light.svg"
+                    alt="TP91.tool"
+                    width={120}
+                    height={37}
+                    className="h-8 w-auto"
+                  />
                 </SheetTitle>
               </SheetHeader>
-              <div className="mt-6 flex flex-col gap-2">
+              <div className="mt-6 flex flex-col gap-1.5">
                 {NAV_ITEMS.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
                   >
                     {item.label}
                   </Link>
                 ))}
-                <Button asChild className="mt-3 w-full">
+                <Button asChild className="mt-4 w-full">
                   <Link href="/services#request-form" onClick={() => setOpen(false)}>
                     Đặt làm Web
                   </Link>

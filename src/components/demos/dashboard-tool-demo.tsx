@@ -116,19 +116,19 @@ export function DashboardToolDemo() {
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-border bg-card p-4">
-          <div className="text-xs text-muted-foreground">Đơn đang lọc</div>
-          <div className="mt-1 font-mono text-2xl font-semibold text-foreground">
+          <div className="text-xs font-medium text-muted-foreground">Đơn đang lọc</div>
+          <div className="mt-1 text-2xl font-bold tabular-nums text-foreground">
             {filtered.length}
           </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <div className="text-xs text-muted-foreground">Doanh thu đã thu</div>
-          <div className="mt-1 font-mono text-2xl font-semibold text-primary">
+          <div className="text-xs font-medium text-muted-foreground">Doanh thu đã thu</div>
+          <div className="mt-1 text-2xl font-bold tabular-nums text-primary">
             {formatVnd(paidTotal)}
           </div>
         </div>
-        <div className="rounded-xl border border-border bg-card p-4 flex flex-col justify-between gap-2">
-          <div className="text-xs text-muted-foreground">Xuất dữ liệu thật</div>
+        <div className="flex flex-col justify-between gap-2 rounded-xl border border-border bg-card p-4">
+          <div className="text-xs font-medium text-muted-foreground">Xuất dữ liệu thật</div>
           <div className="flex gap-2">
             <Button type="button" variant="outline" size="xs" onClick={() => exportFile("csv")}>
               <Download className="size-3.5" />
@@ -181,7 +181,7 @@ export function DashboardToolDemo() {
             step={10000}
             value={newAmount}
             onChange={(e) => setNewAmount(e.target.value)}
-            className="w-28 font-mono"
+            className="w-28 tabular-nums"
           />
           <Button type="submit" size="sm">
             <Plus className="size-4" />
@@ -204,10 +204,12 @@ export function DashboardToolDemo() {
           <TableBody>
             {filtered.map((row) => (
               <TableRow key={row.id}>
-                <TableCell className="font-mono text-xs">{row.id}</TableCell>
+                <TableCell className="text-xs font-medium tabular-nums text-muted-foreground">
+                  {row.id}
+                </TableCell>
                 <TableCell className="font-medium">{row.customer}</TableCell>
                 <TableCell className="text-muted-foreground">{row.product}</TableCell>
-                <TableCell className="text-right font-mono text-xs">
+                <TableCell className="text-right text-xs font-medium tabular-nums">
                   {formatVnd(row.amount)}
                 </TableCell>
                 <TableCell className="text-right">

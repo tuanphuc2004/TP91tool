@@ -89,8 +89,8 @@ export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialD
   }
 
   return (
-    <div className="space-y-16">
-      <section id="demo-lab" className="space-y-4 scroll-mt-24">
+    <div className="space-y-20">
+      <section id="demo-lab" className="space-y-5 scroll-mt-24">
         <div className="space-y-1.5">
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">
             Phòng Live Demo chức năng thật
@@ -103,7 +103,10 @@ export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialD
         <DemoLab initialDemo={initialDemo} onApplyEstimate={handleApplyEstimate} />
       </section>
 
-      <section id="request-form" className="scroll-mt-24 rounded-2xl border border-border bg-card p-6 sm:p-8">
+      <section
+        id="request-form"
+        className="scroll-mt-24 rounded-2xl border border-border bg-card p-6 sm:p-10"
+      >
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           <div className="space-y-4 lg:col-span-5">
             <Badge variant="secondary">Nhận làm Web theo yêu cầu</Badge>
@@ -114,17 +117,17 @@ export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialD
               Tối ưu hạ tầng 100% miễn phí (Vercel Hobby, Supabase Free, GitHub) để bạn vận hành lâu dài với chi phí 0đ cố định.
             </p>
 
-            <div className="space-y-2 rounded-xl border border-border bg-muted/40 p-4 text-xs">
+            <div className="space-y-2.5 rounded-xl border border-border bg-muted/40 p-4 text-sm">
               <p className="font-semibold text-foreground">Kênh trao đổi nhanh</p>
-              <div className="space-y-1.5 text-muted-foreground">
+              <div className="space-y-2 text-xs text-muted-foreground">
                 {SITE_CONFIG.contacts.map((c) => (
                   <div key={c.channel} className="flex justify-between gap-2">
-                    <span>{c.label}:</span>
+                    <span className="font-medium text-foreground">{c.label}</span>
                     <a
                       href={c.href}
                       target={c.channel === "email" ? undefined : "_blank"}
                       rel={c.channel === "email" ? undefined : "noopener noreferrer"}
-                      className="font-mono text-primary hover:underline"
+                      className="text-primary hover:underline"
                     >
                       {c.value}
                     </a>
@@ -274,7 +277,7 @@ export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialD
                           type="button"
                           onClick={() => toggleFeature(feat.id)}
                           className={cn(
-                            "rounded-lg border px-2.5 py-1.5 text-xs transition-colors cursor-pointer",
+                            "rounded-lg border px-3 py-1.5 text-xs transition-colors cursor-pointer",
                             active
                               ? "border-primary bg-accent text-accent-foreground font-medium"
                               : "border-border bg-background text-muted-foreground hover:text-foreground"
@@ -310,7 +313,7 @@ export function ServicesWorkspace({ initialDemo = "dashboard-tool" }: { initialD
                   />
                 </div>
 
-                <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
+                <Button type="submit" disabled={submitting} className="w-full sm:w-auto active:scale-[0.97]">
                   {submitting ? (
                     <>
                       <Loader2 className="size-4 animate-spin" />

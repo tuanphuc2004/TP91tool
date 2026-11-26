@@ -110,10 +110,10 @@ export function AdminDashboard({
     <div className="space-y-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Quản trị TP91tool
           </h1>
-          <p className="mt-1 font-mono text-xs text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             Đăng nhập với: {adminEmail}
           </p>
         </div>
@@ -140,7 +140,7 @@ export function AdminDashboard({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-mono text-3xl font-semibold text-foreground">{items.length}</div>
+            <div className="text-3xl font-bold tabular-nums text-foreground">{items.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -150,7 +150,7 @@ export function AdminDashboard({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-mono text-3xl font-semibold text-primary">
+            <div className="text-3xl font-bold tabular-nums text-primary">
               {pendingOrdersCount}
             </div>
           </CardContent>
@@ -162,7 +162,7 @@ export function AdminDashboard({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-mono text-3xl font-semibold text-primary">
+            <div className="text-3xl font-bold tabular-nums text-primary">
               {newRequestsCount}
             </div>
           </CardContent>
@@ -177,7 +177,7 @@ export function AdminDashboard({
         </TabsList>
 
         <TabsContent value="catalog">
-          <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -192,15 +192,15 @@ export function AdminDashboard({
                 {items.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
-                      <div className="font-medium text-foreground">{item.title}</div>
+                      <div className="font-semibold text-foreground">{item.title}</div>
                       <div className="font-mono text-xs text-muted-foreground">{item.slug}</div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="font-mono text-xs">
+                      <Badge variant="secondary" className="text-xs font-medium">
                         {item.kind}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">
+                    <TableCell className="text-sm font-medium tabular-nums">
                       {formatVnd(item.price_vnd)}
                     </TableCell>
                     <TableCell>
@@ -238,7 +238,7 @@ export function AdminDashboard({
         </TabsContent>
 
         <TabsContent value="orders">
-          <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -262,12 +262,12 @@ export function AdminDashboard({
                       <TableCell className="font-medium">{order.item_title}</TableCell>
                       <TableCell>{order.customer_name}</TableCell>
                       <TableCell className="text-xs">
-                        <span className="font-semibold uppercase mr-1.5">
+                        <span className="mr-1.5 font-semibold uppercase">
                           {order.contact_channel}:
                         </span>
-                        <span className="font-mono">{order.customer_contact}</span>
+                        <span>{order.customer_contact}</span>
                       </TableCell>
-                      <TableCell className="font-mono text-xs">
+                      <TableCell className="text-sm font-medium tabular-nums">
                         {formatVnd(order.amount_vnd)}
                       </TableCell>
                       <TableCell className="text-right">
@@ -297,7 +297,7 @@ export function AdminDashboard({
         </TabsContent>
 
         <TabsContent value="requests">
-          <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -320,13 +320,13 @@ export function AdminDashboard({
                     <TableRow key={req.id}>
                       <TableCell>
                         <div className="font-medium">{req.customer_name}</div>
-                        <Badge variant="secondary" className="mt-1 font-mono text-[11px]">
+                        <Badge variant="secondary" className="mt-1 text-xs">
                           {req.service_package}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs">
-                        <span className="font-semibold uppercase mr-1">{req.contact_channel}:</span>
-                        <span className="font-mono">{req.customer_contact}</span>
+                        <span className="mr-1 font-semibold uppercase">{req.contact_channel}:</span>
+                        <span>{req.customer_contact}</span>
                       </TableCell>
                       <TableCell className="text-xs">
                         <div className="font-medium">{req.budget_range}</div>

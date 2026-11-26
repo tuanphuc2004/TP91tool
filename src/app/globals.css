@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #09090b;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #09090b;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #09090b;
+  --popover-foreground: #0f172a;
   --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #52525b;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
   --accent: #eff6ff;
   --accent-foreground: #1d4ed8;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
   --ring: #2563eb;
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 }
 
 @theme inline {
@@ -44,12 +44,12 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-xs: calc(var(--radius) * 0.5);
-  --radius-sm: calc(var(--radius) * 0.75);
-  --radius-md: calc(var(--radius) * 0.875);
+  --radius-sm: calc(var(--radius) * 0.67);
+  --radius-md: calc(var(--radius) * 0.85);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.5);
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+  --radius-xl: calc(var(--radius) * 1.35);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
 }
 
 @layer base {
@@ -62,7 +62,17 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    line-height: 1.6;
+  }
+
+  code,
+  pre,
+  kbd {
+    font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
   }
 }
 
