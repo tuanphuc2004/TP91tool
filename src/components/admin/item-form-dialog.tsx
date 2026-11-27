@@ -48,6 +48,7 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
 
   const [kind, setKind] = useState<CatalogKind>(initialKind);
   const [slug, setSlug] = useState(editingItem?.slug ?? "");
+  const [slugTouched, setSlugTouched] = useState(Boolean(editingItem));
   const [title, setTitle] = useState(editingItem?.title ?? "");
   const [tagline, setTagline] = useState(editingItem?.tagline ?? "");
   const [description, setDescription] = useState(editingItem?.description ?? "");
@@ -185,7 +186,7 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
               <div className="space-y-1.5">
                 <Label htmlFor="item-kind">Loại mục</Label>
                 <Select value={kind} onValueChange={(v) => handleKindChange(v as CatalogKind)}>
-                  <SelectTrigger id="item-kind">
+                  <SelectTrigger id="item-kind" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -202,7 +203,12 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
                   <Label htmlFor="item-slug">Slug (đường dẫn URL)</Label>
                   <button
                     type="button"
-                    onClick={() => title.trim() && setSlug(slugifyTitle(title))}
+                    onClick={() => {
+                      if (title.trim()) {
+                        setSlug(slugifyTitle(title));
+                        setSlugTouched(false);
+                      }
+                    }}
                     className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline cursor-pointer"
                   >
                     <Wand2 className="size-3" />
@@ -213,8 +219,11 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
                   id="item-slug"
                   required
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="vi-du-skill-moi"
+                  onChange={(e) => {
+                    setSlugTouched(true);
+                    setSlug(e.target.value);
+                  }}
+                  placeholder="tu-dong-tao-tu-tieu-de"
                   className="font-mono text-xs"
                 />
               </div>
@@ -225,17 +234,25 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
               <Input
                 id="item-title"
                 required
+                minLength={2}
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  const nextTitle = e.target.value;
+                  setTitle(nextTitle);
+                  if (!editingItem && !slugTouched) {
+                    setSlug(slugifyTitle(nextTitle));
+                  }
+                }}
                 placeholder="Tên sản phẩm, tool, skill hoặc plugin..."
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="item-tagline">Mô tả ngắn (1 dòng tóm tắt)</Label>
+              <Label htmlFor="item-tagline">Mô tả ngắn (tối thiểu 4 ký tự)</Label>
               <Input
                 id="item-tagline"
                 required
+                minLength={4}
                 value={tagline}
                 onChange={(e) => setTagline(e.target.value)}
                 placeholder="Mô tả ngắn gọn giá trị chính..."
@@ -243,13 +260,15 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="item-desc">Mô tả chi tiết</Label>
+              <Label htmlFor="item-desc">Mô tả chi tiết (tối thiểu 10 ký tự)</Label>
               <Textarea
                 id="item-desc"
                 required
+                minLength={10}
                 rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                placeholder="Mô tả rõ chức năng, đối tượng sử dụng và điểm nổi bật..."
               />
             </div>
           </section>
@@ -296,7 +315,7 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
                       }
                     }}
                   >
-                    <SelectTrigger id="item-category-select">
+                    <SelectTrigger id="item-category-select" className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -453,6 +472,12 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
               </label>
             </div>
           </section>
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
           <DialogFooter className="-mx-6 -mb-6 mt-2 px-6 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

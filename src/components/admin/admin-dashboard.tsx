@@ -155,6 +155,7 @@ export function AdminDashboard({
         : "team";
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [formNonce, setFormNonce] = useState(0);
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<CatalogItem | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -264,11 +265,13 @@ export function AdminDashboard({
 
   function openCreate() {
     setEditingItem(null);
+    setFormNonce((n) => n + 1);
     setDialogOpen(true);
   }
 
   function openEdit(item: CatalogItem) {
     setEditingItem(item);
+    setFormNonce((n) => n + 1);
     setDialogOpen(true);
   }
 
@@ -844,7 +847,7 @@ export function AdminDashboard({
       {canCatalog && (
         <>
           <ItemFormDialog
-            key={editingItem?.id ?? "new"}
+            key={`${editingItem?.id ?? "new"}-${formNonce}`}
             open={dialogOpen}
             onOpenChange={setDialogOpen}
             editingItem={editingItem}
