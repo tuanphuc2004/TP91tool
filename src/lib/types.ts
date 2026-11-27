@@ -1,5 +1,32 @@
 export type CatalogKind = "project" | "tool" | "skill" | "plugin";
 
+export type AiPlatform = "all" | "gemini" | "chatgpt" | "claude";
+
+export type AdminRole = "super_admin" | "admin";
+
+export type AdminPermission = "catalog" | "orders" | "requests";
+
+export interface AdminAccountRecord {
+  id: string;
+  user_id: string | null;
+  email: string;
+  display_name: string | null;
+  role: AdminRole;
+  permissions: readonly AdminPermission[];
+  is_active: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AdminActor {
+  userId: string;
+  email: string;
+  isSuperAdmin: boolean;
+  permissions: readonly AdminPermission[];
+  canManageAdmins: boolean;
+}
+
 export type DemoKey =
   | "landing-showcase"
   | "dashboard-tool"
@@ -38,6 +65,7 @@ export interface CatalogItem {
   description: string;
   price_vnd: number;
   category: string;
+  compatible_platforms: AiPlatform[];
   tech_stack: string[];
   features: string[];
   demo_key: DemoKey | null;

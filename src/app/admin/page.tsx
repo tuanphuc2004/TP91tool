@@ -9,11 +9,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  getAdminAccountsForSuperAdmin,
   getAllItemsForAdmin,
+  getCurrentAdminActor,
   getOrdersForAdmin,
   getProjectRequestsForAdmin,
 } from "@/lib/data/catalog";
-import { isAdminUser } from "@/lib/supabase/auth";
+import { hasAdminPermission } from "@/lib/supabase/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -32,7 +34,7 @@ async function AdminContent() {
               Hiện web đang hiển thị dữ liệu seed mẫu vì chưa có <code>NEXT_PUBLIC_SUPABASE_URL</code> và <code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code>.
             </p>
             <p>
-              Hãy tạo project Supabase miễn phí, chạy file <code>supabase/migrations/001_initial_schema.sql</code> và thêm biến môi trường trên Vercel để bật quản trị CRUD.
+              Hãy tạo project Supabase miễn phí, chạy các file migration trong <code>supabase/migrations/</code> và thêm biến môi trường trên Vercel để bật quản trị CRUD.
             </p>
           </AlertDescription>
         </Alert>
@@ -56,23 +58,33 @@ async function AdminContent() {
     redirect("/login?next=/admin");
   }
 
-  // Hide Admin page completely from non-admin accounts
-  if (!isAdminUser(user)) {
+  const actor = await getCurrentAdminActor();
+
+  // Hide Admin page completely from non-admin or deactivated accounts
+  if (!actor) {
     notFound();
   }
 
-  const [items, orders, requests] = await Promise.all([
-    getAllItemsForAdmin(),
-    getOrdersForAdmin(),
-    getProjectRequestsForAdmin(),
+  const [items, orders, requests, adminTeam] = await Promise.all([
+    hasAdminPermission(actor, "catalog") ? getAllItemsForAdmin() : Promise.resolve([]),
+    hasAdminPermission(actor, "orders") ? getOrdersForAdmin() : Promise.resolve([]),
+    hasAdminPermission(actor, "requests") ? getProjectRequestsForAdmin() : Promise.resolve([]),
+    actor.isSuperAdmin
+      ? getAdminAccountsForSuperAdmin()
+      : Promise.resolve({ accounts: [], migrationReady: true }),
   ]);
+
+  const hasServiceRoleKey = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
 
   return (
     <AdminDashboard
-      adminEmail={user.email ?? "admin"}
+      actor={actor}
       items={items}
       orders={orders}
       requests={requests}
+      adminAccounts={adminTeam.accounts}
+      adminMigrationReady={adminTeam.migrationReady}
+      hasServiceRoleKey={hasServiceRoleKey}
     />
   );
 }
@@ -81,7 +93,7 @@ export default function AdminPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-10 sm:px-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
         <Suspense fallback={<Skeleton className="h-[460px] w-full rounded-xl" />}>
           <AdminContent />
         </Suspense>

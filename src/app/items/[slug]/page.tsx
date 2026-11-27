@@ -12,6 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { KIND_LABELS, formatPlatformLabels } from "@/lib/catalog-taxonomy";
 import { getItemBySlug } from "@/lib/data/catalog";
 import { formatVnd } from "@/lib/order-helper";
 
@@ -67,7 +68,12 @@ async function ItemDetailContent({ params }: { params: Promise<{ slug: string }>
             <div className="space-y-3 p-6">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary">{item.category}</Badge>
-                <Badge variant="outline">{item.kind}</Badge>
+                <Badge variant="outline">{KIND_LABELS[item.kind]}</Badge>
+                {formatPlatformLabels(item.compatible_platforms).map((plat) => (
+                  <Badge key={plat} className="bg-accent text-primary hover:bg-accent">
+                    {plat}
+                  </Badge>
+                ))}
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {item.title}

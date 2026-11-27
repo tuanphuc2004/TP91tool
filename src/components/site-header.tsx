@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { isAdminUser } from "@/lib/supabase/auth";
+import { getCurrentAdminActor } from "@/lib/data/catalog";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { SiteHeaderClient, type HeaderUserState } from "./site-header-client";
@@ -14,9 +14,10 @@ async function HeaderWithAuth() {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
+        const actor = await getCurrentAdminActor();
         initialUser = {
           email: user.email ?? "Tài khoản",
-          isAdmin: isAdminUser(user),
+          isAdmin: Boolean(actor),
         };
       }
     }

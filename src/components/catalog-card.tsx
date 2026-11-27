@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight, Download, Layers, Puzzle, Sparkles, Wrench } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatPlatformLabels } from "@/lib/catalog-taxonomy";
 import { formatVnd } from "@/lib/order-helper";
 import type { CatalogItem, CatalogKind } from "@/lib/types";
 import { CopyCommandButton } from "./copy-command-button";
@@ -47,6 +48,7 @@ export function CatalogCard({ item, showInstallBar = false }: CatalogCardProps) 
   const [downloads, setDownloads] = useState(item.downloads_count);
   const meta = KIND_META[item.kind];
   const KindIcon = meta.icon;
+  const platformLabels = formatPlatformLabels(item.compatible_platforms);
   const isFree =
     item.price_vnd === 0 || item.kind === "skill" || item.kind === "plugin";
 
@@ -91,7 +93,19 @@ export function CatalogCard({ item, showInstallBar = false }: CatalogCardProps) 
           </div>
 
           <div className="flex flex-wrap gap-1.5">
-            {item.tech_stack.slice(0, 3).map((tech) => (
+            <Badge variant="outline" className="text-xs font-medium text-foreground">
+              {item.category}
+            </Badge>
+            {platformLabels.map((plat) => (
+              <Badge
+                key={plat}
+                variant="secondary"
+                className="bg-accent text-xs font-medium text-primary"
+              >
+                {plat}
+              </Badge>
+            ))}
+            {item.tech_stack.slice(0, 2).map((tech) => (
               <span
                 key={tech}
                 className="rounded-md bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"

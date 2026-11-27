@@ -91,6 +91,25 @@ describe("catalogItemInputSchema", () => {
       }).success
     ).toBe(false);
   });
+
+  it("accepts and normalizes compatible_platforms for skills and plugins", () => {
+    const res = catalogItemInputSchema.safeParse({
+      slug: "ai-ui-skill",
+      kind: "skill",
+      title: "AI UI Skill",
+      tagline: "Skill thiết kế giao diện đa nền tảng",
+      description: "Mô tả đủ dài cho skill đa nền tảng AI.",
+      price_vnd: 0,
+      category: "Frontend & UI",
+      compatible_platforms: ["gemini", "claude"],
+      tech_stack: ["SKILL.md"],
+      features: ["Chuẩn responsive"],
+    });
+    expect(res.success).toBe(true);
+    if (res.success) {
+      expect(res.data.compatible_platforms).toEqual(["gemini", "claude"]);
+    }
+  });
 });
 
 describe("estimateProjectScope", () => {

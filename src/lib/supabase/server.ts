@@ -41,3 +41,18 @@ export function createPublicSupabaseClient() {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
+
+/**
+ * Server-only admin client using SUPABASE_SERVICE_ROLE_KEY when configured.
+ * Never import in Client Components.
+ */
+export function createServiceRoleSupabaseClient() {
+  const { url } = getSupabaseEnv();
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ?? "";
+  if (!url || !serviceRoleKey) {
+    return null;
+  }
+  return createClient(url, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}

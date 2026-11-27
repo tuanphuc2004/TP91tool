@@ -1,5 +1,7 @@
 import { z } from "zod";
+import { normalizePlatforms } from "./catalog-taxonomy";
 import { SITE_CONFIG } from "./site-config";
+import { isSuperAdminEmail } from "./supabase/auth";
 import type { ScopeEstimateResult, ServicePackage } from "./types";
 
 export const safeHttpUrlSchema = z
@@ -44,6 +46,10 @@ export const createProjectRequestSchema = z.object({
   referenceUrl: optionalSafeHttpUrlSchema,
 });
 
+export const aiPlatformSchema = z.enum(["all", "gemini", "chatgpt", "claude"]);
+
+export const adminPermissionSchema = z.enum(["catalog", "orders", "requests"]);
+
 export const catalogItemInputSchema = z.object({
   id: z.string().uuid().optional(),
   slug: z
@@ -57,7 +63,12 @@ export const catalogItemInputSchema = z.object({
   tagline: z.string().trim().min(4, "Mô tả ngắn tối thiểu 4 ký tự").max(200),
   description: z.string().trim().min(10, "Mô tả chi tiết tối thiểu 10 ký tự").max(4000),
   price_vnd: z.number().int().min(0, "Giá không được âm").max(500_000_000),
-  category: z.string().trim().min(2).max(60),
+  category: z.string().trim().min(2, "Vui lòng chọn danh mục").max(60),
+  compatible_platforms: z
+    .array(aiPlatformSchema)
+    .max(4)
+    .default([])
+    .transform((vals) => normalizePlatforms(vals)),
   tech_stack: z.array(z.string().trim().min(1).max(40)).max(16).default([]),
   features: z.array(z.string().trim().min(1).max(160)).max(20).default([]),
   demo_key: z
@@ -71,6 +82,32 @@ export const catalogItemInputSchema = z.object({
   skill_markdown: z.string().max(30_000).optional(),
   featured: z.boolean().default(false),
   published: z.boolean().default(true),
+});
+
+export const adminUpsertSubAdminSchema = z.object({
+  id: z.string().uuid().optional(),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email("Email không hợp lệ")
+    .refine((email) => !isSuperAdminEmail(email), {
+      message: "Không thể chỉnh sửa hoặc ghi đè tài khoản Super Admin cao nhất.",
+    }),
+  displayName: z.string().trim().max(80).optional().default(""),
+  password: z
+    .string()
+    .optional()
+    .transform((val) => (val && val.trim().length > 0 ? val.trim() : undefined))
+    .refine((val) => !val || val.length >= 6, {
+      message: "Mật khẩu tạm tối thiểu 6 ký tự",
+    }),
+  permissions: z
+    .array(adminPermissionSchema)
+    .min(1, "Vui lòng chọn ít nhất 1 quyền quản trị")
+    .max(3)
+    .transform((vals) => Array.from(new Set(vals))),
+  isActive: z.boolean().default(true),
 });
 
 export const orderStatusSchema = z.enum([

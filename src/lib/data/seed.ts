@@ -11,6 +11,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
       "Bộ source code Next.js App Router hoàn chỉnh dành cho shop bán sản phẩm số hoặc dịch vụ. Tích hợp sẵn lọc danh mục, trang chi tiết, modal đặt đơn nhanh và cấu trúc chuẩn SEO.",
     price_vnd: 490000,
     category: "Web Bán Hàng",
+    compatible_platforms: [],
     tech_stack: ["Next.js 16", "TypeScript", "Tailwind v4", "shadcn/ui", "Supabase"],
     features: [
       "Lọc theo danh mục và tìm kiếm tức thì không reload trang",
@@ -39,6 +40,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
       "Tiện ích web nhẹ giúp chủ shop hoặc freelancer theo dõi doanh thu, tìm kiếm đơn theo trạng thái và xuất file CSV/JSON ngay trên trình duyệt mà không cần cài phần mềm nặng.",
     price_vnd: 290000,
     category: "Tool Quản Lý",
+    compatible_platforms: [],
     tech_stack: ["React 19", "TypeScript", "Tailwind CSS", "Client Export"],
     features: [
       "Tìm kiếm, lọc trạng thái và tính tổng doanh thu theo thời gian thực",
@@ -67,6 +69,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
       "Công cụ miễn phí giúp kiểm tra file SKILL.md theo chuẩn Antigravity và Claude Code: rà soát tên thư mục, trường description, độ dài nội dung và sinh lệnh cài đặt chuẩn.",
     price_vnd: 0,
     category: "Dev Tool",
+    compatible_platforms: ["all"],
     tech_stack: ["TypeScript", "Zod", "Node.js"],
     features: [
       "Kiểm tra frontmatter name & description chuẩn Antigravity / Claude",
@@ -93,6 +96,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
       "Bộ quy tắc thiết kế landing page và portfolio giúp AI đọc đúng ngữ cảnh sản phẩm, khóa bảng màu nhất quán, giữ hero gọn trong viewport và tránh các lỗi UI rập khuôn.",
     price_vnd: 0,
     category: "Frontend & UI",
+    compatible_platforms: ["all"],
     tech_stack: ["SKILL.md", "Tailwind v4", "Next.js", "Motion"],
     features: [
       "Bộ kiểm tra Pre-Flight trước khi bàn giao giao diện",
@@ -130,6 +134,7 @@ description: Anti-slop frontend skill for landing pages, portfolios, and clean s
       "Tổng hợp các mẫu code thực chiến cho Next.js 16 (proxy.ts + getClaims) kết hợp Supabase Free Postgres, bảo vệ admin qua app_metadata và fallback dữ liệu mẫu khi chưa gắn env.",
     price_vnd: 0,
     category: "Backend & DB",
+    compatible_platforms: ["gemini", "claude"],
     tech_stack: ["SKILL.md", "Next.js 16", "Supabase RLS", "@supabase/ssr"],
     features: [
       "Mẫu proxy.ts làm mới session SSR an toàn bằng getClaims()",
@@ -166,6 +171,7 @@ description: Guidelines for Next.js 16 App Router with Supabase Free SSR, proxy.
       "Plugin đóng gói sẵn cấu trúc plugin.json để cài một lần vào Antigravity hoặc Claude Code, giúp AI tự động kích hoạt đúng quy trình từ brainstorm, thiết kế giao diện đến deploy Vercel.",
     price_vnd: 0,
     category: "Plugin Bundle",
+    compatible_platforms: ["gemini", "claude"],
     tech_stack: ["plugin.json", "Antigravity Plugin", "Vercel CLI", "Git"],
     features: [
       "Bật hoặc tắt cả bộ kỹ năng chỉ với 1 công tắc trong Customizations",
@@ -200,6 +206,7 @@ description: Plugin bundle combining Next.js, shadcn/ui, Supabase, and Vercel CL
       "Dự án web dành cho freelancer hoặc studio nhỏ: khách hàng tự chọn gói dịch vụ, tích năng cần thiết, xem ước tính ngày làm và gửi brief trực tiếp vào trang quản trị.",
     price_vnd: 790000,
     category: "Web Dịch Vụ",
+    compatible_platforms: [],
     tech_stack: ["Next.js 16", "shadcn/ui", "Zod", "Supabase"],
     features: [
       "Bộ tính phạm vi và stack đề xuất theo từng lựa chọn của khách",
@@ -227,6 +234,7 @@ description: Plugin bundle combining Next.js, shadcn/ui, Supabase, and Vercel CL
       "Bộ skill và checklist giúp rà soát nhanh SEO kỹ thuật trước khi đưa website lên production trên Vercel: metadata động, canonical URL, sitemap.xml và tốc độ Core Web Vitals.",
     price_vnd: 0,
     category: "SEO & Growth",
+    compatible_platforms: ["all"],
     tech_stack: ["Next.js Metadata", "Sitemap", "Schema.org"],
     features: [
       "Checklist kiểm tra title, description, robots và canonical",

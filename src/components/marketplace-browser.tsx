@@ -17,13 +17,23 @@ import type { CatalogItem } from "@/lib/types";
 
 export function MarketplaceBrowser({ items }: { items: CatalogItem[] }) {
   const [kindFilter, setKindFilter] = useState<"all" | "project" | "tool">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<"all" | "free" | "paid">("all");
   const [search, setSearch] = useState("");
   const reduce = useReducedMotion();
 
+  const categories = useMemo(() => {
+    const source =
+      kindFilter === "all" ? items : items.filter((item) => item.kind === kindFilter);
+    return Array.from(new Set(source.map((item) => item.category))).sort((a, b) =>
+      a.localeCompare(b, "vi")
+    );
+  }, [items, kindFilter]);
+
   const filtered = useMemo(() => {
     return items.filter((item) => {
       if (kindFilter !== "all" && item.kind !== kindFilter) return false;
+      if (categoryFilter !== "all" && item.category !== categoryFilter) return false;
       if (priceFilter === "free" && item.price_vnd !== 0) return false;
       if (priceFilter === "paid" && item.price_vnd === 0) return false;
       if (search.trim()) {
@@ -33,17 +43,20 @@ export function MarketplaceBrowser({ items }: { items: CatalogItem[] }) {
       }
       return true;
     });
-  }, [items, kindFilter, priceFilter, search]);
+  }, [items, kindFilter, categoryFilter, priceFilter, search]);
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-2">
           <Button
             type="button"
             size="sm"
             variant={kindFilter === "all" ? "default" : "outline"}
-            onClick={() => setKindFilter("all")}
+            onClick={() => {
+              setKindFilter("all");
+              setCategoryFilter("all");
+            }}
             className="active:scale-[0.97]"
           >
             Tất cả
@@ -52,7 +65,10 @@ export function MarketplaceBrowser({ items }: { items: CatalogItem[] }) {
             type="button"
             size="sm"
             variant={kindFilter === "project" ? "default" : "outline"}
-            onClick={() => setKindFilter("project")}
+            onClick={() => {
+              setKindFilter("project");
+              setCategoryFilter("all");
+            }}
             className="active:scale-[0.97]"
           >
             Dự án Web
@@ -61,7 +77,10 @@ export function MarketplaceBrowser({ items }: { items: CatalogItem[] }) {
             type="button"
             size="sm"
             variant={kindFilter === "tool" ? "default" : "outline"}
-            onClick={() => setKindFilter("tool")}
+            onClick={() => {
+              setKindFilter("tool");
+              setCategoryFilter("all");
+            }}
             className="active:scale-[0.97]"
           >
             Tool tiện ích
@@ -69,6 +88,20 @@ export function MarketplaceBrowser({ items }: { items: CatalogItem[] }) {
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-full sm:w-44" aria-label="Lọc theo danh mục">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Mọi danh mục</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           <Select
             value={priceFilter}
             onValueChange={(v) => setPriceFilter(v as "all" | "free" | "paid")}
@@ -83,7 +116,7 @@ export function MarketplaceBrowser({ items }: { items: CatalogItem[] }) {
             </SelectContent>
           </Select>
 
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-60">
             <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
             <Input
               value={search}
