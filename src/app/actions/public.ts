@@ -2,11 +2,16 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { SEED_CATALOG_ITEMS } from "@/lib/data/seed";
 import { buildVerifiedOrderPayload } from "@/lib/order-helper";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createPublicSupabaseClient } from "@/lib/supabase/server";
+import {
+  notifyTelegramNewOrder,
+  notifyTelegramProjectRequest,
+} from "@/lib/telegram";
 import type { CatalogItem } from "@/lib/types";
 import { createOrderSchema, createProjectRequestSchema } from "@/lib/validators";
 
@@ -47,12 +52,12 @@ export async function submitOrderAction(rawInput: unknown): Promise<
   if (configured) {
     const supabase = createPublicSupabaseClient();
     if (supabase) {
-      const { data } = await supabase
-        .from("catalog_items")
-        .select("*")
-        .or(`id.eq.${parsed.data.itemId},slug.eq.${parsed.data.itemId}`)
-        .eq("published", true)
-        .maybeSingle();
+      const isUuid = z.string().uuid().safeParse(parsed.data.itemId).success;
+      const baseQuery = supabase.from("catalog_items").select("*").eq("published", true);
+      const { data } = await (isUuid
+        ? baseQuery.eq("id", parsed.data.itemId)
+        : baseQuery.eq("slug", parsed.data.itemId)
+      ).maybeSingle();
       if (data) {
         item = data as CatalogItem;
       }
@@ -70,10 +75,21 @@ export async function submitOrderAction(rawInput: unknown): Promise<
   }
 
   if (!configured) {
+    const previewOrderId = `PREVIEW-${Date.now().toString().slice(-6)}`;
+    await notifyTelegramNewOrder({
+      mode: "preview",
+      orderId: previewOrderId,
+      itemTitle: verified.payload.item_title,
+      amountVnd: verified.payload.amount_vnd,
+      customerName: verified.payload.customer_name,
+      contactChannel: verified.payload.contact_channel,
+      customerContact: verified.payload.customer_contact,
+      note: verified.payload.note,
+    });
     return {
       ok: true,
       mode: "preview",
-      orderId: `PREVIEW-${Date.now().toString().slice(-6)}`,
+      orderId: previewOrderId,
       itemTitle: verified.payload.item_title,
       amountVnd: verified.payload.amount_vnd,
       message:
@@ -86,22 +102,33 @@ export async function submitOrderAction(rawInput: unknown): Promise<
     return { ok: false, error: "Không thể kết nối máy chủ dữ liệu." };
   }
 
-  const { data: inserted, error } = await supabase
-    .from("orders")
-    .insert(verified.payload)
-    .select("id")
-    .single();
+  const orderId = crypto.randomUUID();
+  const { error } = await supabase.from("orders").insert({
+    id: orderId,
+    ...verified.payload,
+  });
 
-  if (error || !inserted) {
-    console.error("Insert order failed:", error?.message);
+  if (error) {
+    console.error("Insert order failed:", error.message);
     return { ok: false, error: "Không thể lưu đơn hàng lúc này. Vui lòng thử lại hoặc liên hệ trực tiếp." };
   }
+
+  await notifyTelegramNewOrder({
+    mode: "database",
+    orderId,
+    itemTitle: verified.payload.item_title,
+    amountVnd: verified.payload.amount_vnd,
+    customerName: verified.payload.customer_name,
+    contactChannel: verified.payload.contact_channel,
+    customerContact: verified.payload.customer_contact,
+    note: verified.payload.note,
+  });
 
   revalidatePath("/admin");
   return {
     ok: true,
     mode: "database",
-    orderId: String(inserted.id),
+    orderId,
     itemTitle: verified.payload.item_title,
     amountVnd: verified.payload.amount_vnd,
     message: "Đã ghi nhận đơn hàng thành công! Hãy nhắn mã đơn qua kênh bạn chọn để nhận bàn giao nhanh.",
@@ -182,10 +209,24 @@ export async function submitProjectRequestAction(rawInput: unknown): Promise<
   }
 
   if (!isSupabaseConfigured()) {
+    const previewRequestId = `REQ-${Date.now().toString().slice(-6)}`;
+    await notifyTelegramProjectRequest({
+      mode: "preview",
+      requestId: previewRequestId,
+      servicePackage: parsed.data.servicePackage,
+      customerName: parsed.data.customerName,
+      contactChannel: parsed.data.contactChannel,
+      customerContact: parsed.data.customerContact,
+      budgetRange: parsed.data.budgetRange,
+      timeline: parsed.data.timeline,
+      selectedFeatures: parsed.data.selectedFeatures,
+      description: parsed.data.description,
+      referenceUrl: parsed.data.referenceUrl ?? null,
+    });
     return {
       ok: true,
       mode: "preview",
-      requestId: `REQ-${Date.now().toString().slice(-6)}`,
+      requestId: previewRequestId,
       message:
         "Đã ghi nhận bản xem trước yêu cầu (chưa gắn env Supabase). Bạn có thể gửi trực tiếp thông tin này qua Zalo, Telegram hoặc Email.",
     };
@@ -196,33 +237,45 @@ export async function submitProjectRequestAction(rawInput: unknown): Promise<
     return { ok: false, error: "Không thể kết nối máy chủ dữ liệu." };
   }
 
-  const { data: inserted, error } = await supabase
-    .from("project_requests")
-    .insert({
-      service_package: parsed.data.servicePackage,
-      customer_name: parsed.data.customerName,
-      contact_channel: parsed.data.contactChannel,
-      customer_contact: parsed.data.customerContact,
-      budget_range: parsed.data.budgetRange,
-      timeline: parsed.data.timeline,
-      selected_features: parsed.data.selectedFeatures,
-      description: parsed.data.description,
-      reference_url: parsed.data.referenceUrl ?? null,
-      status: "new",
-    })
-    .select("id")
-    .single();
+  const requestId = crypto.randomUUID();
+  const { error } = await supabase.from("project_requests").insert({
+    id: requestId,
+    service_package: parsed.data.servicePackage,
+    customer_name: parsed.data.customerName,
+    contact_channel: parsed.data.contactChannel,
+    customer_contact: parsed.data.customerContact,
+    budget_range: parsed.data.budgetRange,
+    timeline: parsed.data.timeline,
+    selected_features: parsed.data.selectedFeatures,
+    description: parsed.data.description,
+    reference_url: parsed.data.referenceUrl ?? null,
+    status: "new",
+  });
 
-  if (error || !inserted) {
-    console.error("Insert project_request failed:", error?.message);
+  if (error) {
+    console.error("Insert project_request failed:", error.message);
     return { ok: false, error: "Không thể gửi yêu cầu lúc này. Vui lòng liên hệ trực tiếp qua Zalo hoặc Email." };
   }
+
+  await notifyTelegramProjectRequest({
+    mode: "database",
+    requestId,
+    servicePackage: parsed.data.servicePackage,
+    customerName: parsed.data.customerName,
+    contactChannel: parsed.data.contactChannel,
+    customerContact: parsed.data.customerContact,
+    budgetRange: parsed.data.budgetRange,
+    timeline: parsed.data.timeline,
+    selectedFeatures: parsed.data.selectedFeatures,
+    description: parsed.data.description,
+    referenceUrl: parsed.data.referenceUrl ?? null,
+  });
 
   revalidatePath("/admin");
   return {
     ok: true,
     mode: "database",
-    requestId: String(inserted.id),
+    requestId,
     message: "Đã gửi yêu cầu làm web thành công! Tôi sẽ phản hồi báo giá và lộ trình chi tiết sớm nhất.",
   };
 }

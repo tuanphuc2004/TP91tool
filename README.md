@@ -5,8 +5,10 @@ Website bán dự án web & tool tiện ích, chia sẻ miễn phí AI skill & p
 ## Tính năng chính
 
 - **Kho Dự án & Tool (`/marketplace`)**: Lọc theo loại, mức giá (Miễn phí / Trả phí), tìm kiếm nhanh, đặt mua lưu đơn về Supabase Postgres.
+- **Tiện ích Web 0đ (`/tools`)**: Nén & chỉnh kích thước ảnh (WebP / JPEG / PNG, chuẩn OG Image 1200×630, đóng dấu watermark, tải ZIP) chạy 100% trên trình duyệt.
 - **Kho Skill & Plugin miễn phí (`/skills`)**: Xem nội dung `SKILL.md`, sao chép lệnh cài đặt 1 chạm, đếm lượt tải.
 - **Nhận làm Web & Phòng Live Demo (`/services`)**: 4 demo chạy thật trên trình duyệt (`Mini POS & Export CSV/JSON`, `Landing Builder`, `SKILL.md Inspector`, `Bộ ước tính làm Web`) liên kết trực tiếp với form gửi yêu cầu.
+- **Thông báo Telegram tự động (0đ)**: Gửi tin nhắn về Telegram Bot ngay khi có đơn hàng mới (`/marketplace`) hoặc yêu cầu làm web mới (`/services`) thông qua `TP91_NOTIFY_KEY` (hoặc `TELEGRAM_BOT_TOKEN` & `TELEGRAM_CHAT_ID`).
 - **Quản trị Admin (`/admin`)**: Bảo vệ bằng Supabase Auth + RLS (`app_metadata.role = 'admin'`), CRUD sản phẩm/skill và cập nhật trạng thái đơn mua, yêu cầu làm web.
 
 ---

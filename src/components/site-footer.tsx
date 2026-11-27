@@ -54,6 +54,11 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/tools" className="transition-colors hover:text-primary">
+                  Tiện ích nén ảnh (0đ)
+                </Link>
+              </li>
+              <li>
                 <Link href="/skills" className="transition-colors hover:text-primary">
                   Kho Skill & Plugin miễn phí
                 </Link>

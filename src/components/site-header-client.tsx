@@ -29,6 +29,7 @@ interface NavItem {
 
 const BASE_NAV_ITEMS: readonly NavItem[] = [
   { href: "/marketplace", label: "Dự án & Tool" },
+  { href: "/tools", label: "Tiện ích 0đ" },
   { href: "/skills", label: "Skill & Plugin" },
   { href: "/services", label: "Nhận làm Web" },
 ];
