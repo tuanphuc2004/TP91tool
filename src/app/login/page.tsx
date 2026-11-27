@@ -20,10 +20,14 @@ export const metadata: Metadata = {
 async function LoginContent({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, error } = await searchParams;
   const nextPath = safeRedirectPath(next);
+  const initialError =
+    error === "link_invalid"
+      ? "Liên kết xác thực hoặc đặt lại mật khẩu không hợp lệ hoặc đã hết hạn."
+      : null;
 
   if (!isSupabaseConfigured()) {
     return (
@@ -51,13 +55,13 @@ async function LoginContent({
     }
   }
 
-  return <AuthForm nextPath={nextPath} />;
+  return <AuthForm nextPath={nextPath} initialError={initialError} />;
 }
 
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Loader2, LogIn, UserPlus } from "lucide-react";
+import { ArrowLeft, CheckCircle2, KeyRound, Loader2, LogIn, UserPlus } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,23 +14,36 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { safeRedirectPath } from "@/lib/supabase/auth";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-type AuthMode = "login" | "register";
+type AuthMode = "login" | "register" | "forgot";
 
-export function AuthForm({ nextPath = "/" }: { nextPath?: string }) {
+export function AuthForm({
+  nextPath = "/",
+  initialError = null,
+}: {
+  nextPath?: string;
+  initialError?: string | null;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError);
   const [notice, setNotice] = useState<string | null>(null);
 
   const safeNext = safeRedirectPath(nextPath);
+
+  function switchMode(nextMode: AuthMode) {
+    setMode(nextMode);
+    setError(null);
+    setNotice(null);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +57,11 @@ export function AuthForm({ nextPath = "/" }: { nextPath?: string }) {
     }
 
     const cleanEmail = email.trim();
+    if (!cleanEmail) {
+      setError("Vui lòng nhập địa chỉ email.");
+      return;
+    }
+
     if (mode === "register") {
       if (password.length < 6) {
         setError("Mật khẩu cần tối thiểu 6 ký tự.");
@@ -57,6 +75,27 @@ export function AuthForm({ nextPath = "/" }: { nextPath?: string }) {
 
     setLoading(true);
     try {
+      if (mode === "forgot") {
+        const redirectTo = `${window.location.origin}/auth/callback?next=/reset-password`;
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+          cleanEmail,
+          { redirectTo }
+        );
+
+        if (resetError) {
+          setError(
+            resetError.message ||
+              "Không thể gửi email khôi phục mật khẩu lúc này. Vui lòng thử lại sau."
+          );
+          return;
+        }
+
+        setNotice(
+          `Đã gửi liên kết đặt lại mật khẩu tới ${cleanEmail}. Vui lòng kiểm tra cả hộp thư đến và thư mục Spam.`
+        );
+        return;
+      }
+
       if (mode === "login") {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: cleanEmail,
@@ -102,51 +141,60 @@ export function AuthForm({ nextPath = "/" }: { nextPath?: string }) {
   return (
     <Card className="w-full max-w-md rounded-2xl border-border shadow-xs">
       <CardHeader className="space-y-4">
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1">
+        {mode === "forgot" ? (
           <button
             type="button"
-            onClick={() => {
-              setMode("login");
-              setError(null);
-              setNotice(null);
-            }}
-            className={cn(
-              "inline-flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-medium transition-colors cursor-pointer",
-              mode === "login"
-                ? "bg-card text-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            )}
+            onClick={() => switchMode("login")}
+            className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
           >
-            <LogIn className="size-4 text-primary" />
-            Đăng nhập
+            <ArrowLeft className="size-4" />
+            Quay lại đăng nhập
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMode("register");
-              setError(null);
-              setNotice(null);
-            }}
-            className={cn(
-              "inline-flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-medium transition-colors cursor-pointer",
-              mode === "register"
-                ? "bg-card text-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <UserPlus className="size-4 text-primary" />
-            Đăng ký
-          </button>
-        </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1">
+            <button
+              type="button"
+              onClick={() => switchMode("login")}
+              className={cn(
+                "inline-flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-medium transition-colors cursor-pointer",
+                mode === "login"
+                  ? "bg-card text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <LogIn className="size-4 text-primary" />
+              Đăng nhập
+            </button>
+            <button
+              type="button"
+              onClick={() => switchMode("register")}
+              className={cn(
+                "inline-flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-medium transition-colors cursor-pointer",
+                mode === "register"
+                  ? "bg-card text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <UserPlus className="size-4 text-primary" />
+              Đăng ký
+            </button>
+          </div>
+        )}
 
         <div>
           <CardTitle className="text-xl font-bold">
-            {mode === "login" ? "Đăng nhập TP91tool" : "Tạo tài khoản mới"}
+            {mode === "login"
+              ? "Đăng nhập TP91tool"
+              : mode === "register"
+                ? "Tạo tài khoản mới"
+                : "Quên mật khẩu"}
           </CardTitle>
           <CardDescription className="mt-1">
             {mode === "login"
               ? "Đăng nhập bằng tài khoản của bạn để quản lý phiên làm việc."
-              : "Tạo tài khoản miễn phí chỉ trong vài giây."}
+              : mode === "register"
+                ? "Tạo tài khoản miễn phí chỉ trong vài giây."
+                : "Nhập email đã đăng ký để nhận liên kết đặt lại mật khẩu."}
           </CardDescription>
         </div>
       </CardHeader>
@@ -180,26 +228,37 @@ export function AuthForm({ nextPath = "/" }: { nextPath?: string }) {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="auth-password">Mật khẩu</Label>
-            <Input
-              id="auth-password"
-              type="password"
-              required
-              minLength={6}
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Tối thiểu 6 ký tự"
-            />
-          </div>
+          {mode !== "forgot" && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="auth-password">Mật khẩu</Label>
+                {mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => switchMode("forgot")}
+                    className="text-xs font-medium text-primary hover:underline cursor-pointer"
+                  >
+                    Quên mật khẩu?
+                  </button>
+                )}
+              </div>
+              <PasswordInput
+                id="auth-password"
+                required
+                minLength={6}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Tối thiểu 6 ký tự"
+              />
+            </div>
+          )}
 
           {mode === "register" && (
             <div className="space-y-2">
               <Label htmlFor="auth-confirm-password">Nhập lại mật khẩu</Label>
-              <Input
+              <PasswordInput
                 id="auth-confirm-password"
-                type="password"
                 required
                 minLength={6}
                 autoComplete="new-password"
@@ -218,8 +277,13 @@ export function AuthForm({ nextPath = "/" }: { nextPath?: string }) {
               </>
             ) : mode === "login" ? (
               "Đăng nhập"
-            ) : (
+            ) : mode === "register" ? (
               "Đăng ký tài khoản"
+            ) : (
+              <>
+                <KeyRound className="size-4" />
+                Gửi liên kết đặt lại mật khẩu
+              </>
             )}
           </Button>
         </form>
