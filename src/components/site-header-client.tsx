@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { ArrowUpRight, LogIn, LogOut, Menu, ShieldCheck, User as UserIcon } from "lucide-react";
+import { LogIn, LogOut, Menu, ShieldCheck, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -162,17 +162,6 @@ export function SiteHeaderClient({ initialUser }: { initialUser: HeaderUserState
             </Button>
           )}
 
-          <Button
-            asChild
-            size="sm"
-            className="hidden sm:inline-flex whitespace-nowrap transition-transform active:scale-[0.97]"
-          >
-            <Link href="/services#request-form">
-              Đặt làm Web
-              <ArrowUpRight className="size-4" />
-            </Link>
-          </Button>
-
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
@@ -236,12 +225,6 @@ export function SiteHeaderClient({ initialUser }: { initialUser: HeaderUserState
                     </Button>
                   )}
                 </div>
-
-                <Button asChild className="mt-1 w-full">
-                  <Link href="/services#request-form" onClick={() => setOpen(false)}>
-                    Đặt làm Web
-                  </Link>
-                </Button>
               </div>
             </SheetContent>
           </Sheet>
