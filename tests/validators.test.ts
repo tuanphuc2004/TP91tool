@@ -110,6 +110,47 @@ describe("catalogItemInputSchema", () => {
       expect(res.data.compatible_platforms).toEqual(["gemini", "claude"]);
     }
   });
+
+  it("accepts valid banner_url (https or relative /images) and rejects javascript: URI", () => {
+    expect(
+      catalogItemInputSchema.safeParse({
+        slug: "banner-test",
+        kind: "project",
+        title: "Banner Test",
+        tagline: "Kiểm tra ảnh banner",
+        description: "Mô tả đủ dài cho sản phẩm có banner.",
+        price_vnd: 0,
+        category: "Web Bán Hàng",
+        banner_url: "https://example.com/banner.jpg",
+      }).success
+    ).toBe(true);
+
+    expect(
+      catalogItemInputSchema.safeParse({
+        slug: "banner-test-local",
+        kind: "project",
+        title: "Banner Test",
+        tagline: "Kiểm tra ảnh banner",
+        description: "Mô tả đủ dài cho sản phẩm có banner.",
+        price_vnd: 0,
+        category: "Web Bán Hàng",
+        banner_url: "/images/card-project.jpg",
+      }).success
+    ).toBe(true);
+
+    expect(
+      catalogItemInputSchema.safeParse({
+        slug: "banner-test-bad",
+        kind: "project",
+        title: "Banner Test",
+        tagline: "Kiểm tra ảnh banner",
+        description: "Mô tả đủ dài cho sản phẩm có banner.",
+        price_vnd: 0,
+        category: "Web Bán Hàng",
+        banner_url: "javascript:alert(1)",
+      }).success
+    ).toBe(false);
+  });
 });
 
 describe("estimateProjectScope", () => {

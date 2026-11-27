@@ -48,6 +48,8 @@ export function CatalogCard({ item, showInstallBar = false }: CatalogCardProps) 
   const [downloads, setDownloads] = useState(item.downloads_count);
   const meta = KIND_META[item.kind];
   const KindIcon = meta.icon;
+  const coverSrc = item.banner_url?.trim() || meta.image;
+  const isRemoteCover = coverSrc.startsWith("http://") || coverSrc.startsWith("https://");
   const platformLabels = formatPlatformLabels(item.compatible_platforms);
   const isFree =
     item.price_vnd === 0 || item.kind === "skill" || item.kind === "plugin";
@@ -59,9 +61,10 @@ export function CatalogCard({ item, showInstallBar = false }: CatalogCardProps) 
         className="relative block aspect-video w-full overflow-hidden border-b border-border bg-muted/40"
       >
         <Image
-          src={meta.image}
+          src={coverSrc}
           alt={item.title}
           fill
+          unoptimized={isRemoteCover}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-300 group-hover:scale-[1.04]"
         />

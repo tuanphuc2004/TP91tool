@@ -35,6 +35,8 @@ async function ItemDetailContent({ params }: { params: Promise<{ slug: string }>
   }
 
   const isFree = item.price_vnd === 0 || item.kind === "skill" || item.kind === "plugin";
+  const coverSrc = item.banner_url?.trim() || getCoverImage(item.kind);
+  const isRemoteCover = coverSrc.startsWith("http://") || coverSrc.startsWith("https://");
   const backHref = item.kind === "skill" || item.kind === "plugin" ? "/skills" : "/marketplace";
   const hasExternalPreview =
     Boolean(item.demo_url) &&
@@ -57,10 +59,11 @@ async function ItemDetailContent({ params }: { params: Promise<{ slug: string }>
           <div className="overflow-hidden rounded-2xl border border-border bg-card">
             <div className="relative aspect-16/9 w-full bg-muted/30">
               <Image
-                src={getCoverImage(item.kind)}
+                src={coverSrc}
                 alt={item.title}
                 fill
                 priority
+                unoptimized={isRemoteCover}
                 sizes="(max-width: 1024px) 100vw, 65vw"
                 className="object-cover"
               />

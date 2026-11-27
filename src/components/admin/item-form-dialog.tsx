@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Loader2, Sparkles, Wand2 } from "lucide-react";
-import { adminUpsertItemAction } from "@/app/actions/admin";
+import { Check, ImageIcon, Loader2, Sparkles, Upload, Wand2, X } from "lucide-react";
+import { adminUploadBannerAction, adminUpsertItemAction } from "@/app/actions/admin";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,6 +63,9 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
   );
   const [featuresText, setFeaturesText] = useState(editingItem?.features.join("\n") ?? "");
   const [demoUrl, setDemoUrl] = useState(editingItem?.demo_url ?? "");
+  const [bannerUrl, setBannerUrl] = useState(editingItem?.banner_url ?? "");
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [installCommand, setInstallCommand] = useState(editingItem?.install_command ?? "");
   const [downloadUrl, setDownloadUrl] = useState(editingItem?.download_url ?? "");
   const [skillMarkdown, setSkillMarkdown] = useState(editingItem?.skill_markdown ?? "");
@@ -109,6 +112,34 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
     });
   }
 
+  async function handleBannerFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Dung lượng ảnh banner tối đa là 5MB.");
+      return;
+    }
+
+    setError(null);
+    setUploadingBanner(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("slug", slug || title || "banner");
+
+      const res = await adminUploadBannerAction(formData);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      setBannerUrl(res.url);
+    } finally {
+      setUploadingBanner(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -140,6 +171,7 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
           .filter(Boolean),
         demo_key: null,
         demo_url: demoUrl,
+        banner_url: bannerUrl,
         install_command: installCommand,
         download_url: downloadUrl,
         skill_markdown: skillMarkdown,
@@ -391,9 +423,92 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
             </div>
           </section>
 
-          {/* Khối 3: Tài nguyên & Hiển thị */}
+          {/* Khối 3: Ảnh banner, Tài nguyên & Xuất bản */}
           <section className="space-y-4 rounded-xl border border-border bg-card p-4">
-            <h3 className="text-sm font-semibold text-foreground">3. Tài nguyên & Xuất bản</h3>
+            <h3 className="text-sm font-semibold text-foreground">
+              3. Ảnh banner, Tài nguyên & Xuất bản
+            </h3>
+
+            <div className="space-y-2.5 rounded-xl border border-border/80 bg-muted/20 p-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Label htmlFor="item-banner-url" className="inline-flex items-center gap-1.5">
+                  <ImageIcon className="size-3.5 text-primary" />
+                  Ảnh banner sản phẩm (tùy chọn)
+                </Label>
+                {bannerUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setBannerUrl("")}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-destructive cursor-pointer"
+                  >
+                    <X className="size-3.5" />
+                    Dùng ảnh mặc định
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-12 sm:items-center">
+                <div className="sm:col-span-5">
+                  <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-background">
+                    {bannerUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={bannerUrl}
+                        alt="Xem trước banner"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-1 px-3 text-center text-xs text-muted-foreground">
+                        <ImageIcon className="size-5 text-muted-foreground/70" />
+                        <span>Đang dùng ảnh mặc định theo loại</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2 sm:col-span-7">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                    onChange={handleBannerFileChange}
+                    className="hidden"
+                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={uploadingBanner}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {uploadingBanner ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Đang tải ảnh lên...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="size-4" />
+                          Tải ảnh từ máy
+                        </>
+                      )}
+                    </Button>
+                    <span className="text-xs text-muted-foreground">
+                      JPG, PNG, WebP, SVG (tối đa 5MB)
+                    </span>
+                  </div>
+
+                  <Input
+                    id="item-banner-url"
+                    value={bannerUrl}
+                    onChange={(e) => setBannerUrl(e.target.value)}
+                    placeholder="Hoặc dán URL ảnh https://... hoặc /images/..."
+                    className="text-xs"
+                  />
+                </div>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
@@ -483,7 +598,7 @@ export function ItemFormDialog({ open, onOpenChange, editingItem }: ItemFormDial
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Hủy
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button type="submit" disabled={saving || uploadingBanner}>
               {saving ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />

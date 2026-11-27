@@ -70,6 +70,7 @@ export interface CatalogItem {
   features: string[];
   demo_key: DemoKey | null;
   demo_url: string | null;
+  banner_url: string | null;
   install_command: string | null;
   download_url: string | null;
   skill_markdown: string | null;

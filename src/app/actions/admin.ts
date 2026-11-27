@@ -77,6 +77,7 @@ export async function adminUpsertItemAction(
     features: parsed.data.features,
     demo_key: parsed.data.demo_key,
     demo_url: parsed.data.demo_url ?? null,
+    banner_url: parsed.data.banner_url ?? null,
     install_command: parsed.data.install_command || null,
     download_url: parsed.data.download_url ?? null,
     skill_markdown: parsed.data.skill_markdown || null,
@@ -379,6 +380,73 @@ export async function adminDeleteSubAdminAction(
 
   revalidatePath("/admin");
   return { ok: true };
+}
+
+const ALLOWED_BANNER_MIME: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+  "image/svg+xml": "svg",
+};
+
+const MAX_BANNER_BYTES = 5 * 1024 * 1024;
+
+export async function adminUploadBannerAction(
+  formData: FormData
+): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  const auth = await requirePermission("catalog");
+  if (!auth.ok) return { ok: false, error: auth.error };
+
+  const file = formData.get("file");
+  if (!(file instanceof File)) {
+    return { ok: false, error: "Không tìm thấy tệp ảnh hợp lệ." };
+  }
+
+  const ext = ALLOWED_BANNER_MIME[file.type];
+  if (!ext) {
+    return {
+      ok: false,
+      error: "Chỉ hỗ trợ ảnh JPG, PNG, WebP, GIF hoặc SVG.",
+    };
+  }
+
+  if (file.size <= 0 || file.size > MAX_BANNER_BYTES) {
+    return { ok: false, error: "Dung lượng ảnh tối đa là 5MB." };
+  }
+
+  const rawSlug = String(formData.get("slug") ?? "banner")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  const safeBase = rawSlug || "banner";
+  const path = `banners/${Date.now()}-${safeBase}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+
+  const storageClient = createServiceRoleSupabaseClient() ?? auth.supabase;
+  const buffer = await file.arrayBuffer();
+
+  const { error: uploadError } = await storageClient.storage
+    .from("catalog-banners")
+    .upload(path, buffer, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.error("Upload banner failed:", uploadError.message);
+    return {
+      ok: false,
+      error: `Không thể tải ảnh lên Supabase Storage: ${uploadError.message}`,
+    };
+  }
+
+  const {
+    data: { publicUrl },
+  } = storageClient.storage.from("catalog-banners").getPublicUrl(path);
+
+  return { ok: true, url: publicUrl };
 }
 
 export async function adminSignOutAction(): Promise<void> {

@@ -24,6 +24,22 @@ export const optionalSafeHttpUrlSchema = z
   .transform((val) => (val && val.length > 0 ? val : undefined))
   .pipe(safeHttpUrlSchema.optional());
 
+export const optionalBannerUrlSchema = z
+  .string()
+  .trim()
+  .optional()
+  .transform((val) => (val && val.length > 0 ? val : undefined))
+  .refine(
+    (value) => {
+      if (!value) return true;
+      if (value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/\\")) {
+        return true;
+      }
+      return safeHttpUrlSchema.safeParse(value).success;
+    },
+    { message: "Ảnh banner chỉ chấp nhận URL http(s):// hoặc đường dẫn /images/..." }
+  );
+
 export const contactChannelSchema = z.enum(["zalo", "telegram", "facebook", "email"]);
 
 export const createOrderSchema = z.object({
@@ -77,6 +93,7 @@ export const catalogItemInputSchema = z.object({
     .optional()
     .default(null),
   demo_url: optionalSafeHttpUrlSchema,
+  banner_url: optionalBannerUrlSchema,
   install_command: z.string().trim().max(300).optional(),
   download_url: optionalSafeHttpUrlSchema,
   skill_markdown: z.string().max(30_000).optional(),

@@ -21,6 +21,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: null,
     download_url: null,
     skill_markdown: null,
@@ -50,6 +51,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: null,
     download_url: null,
     skill_markdown: null,
@@ -77,6 +79,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: "npx tsx scripts/check-skills.ts",
     download_url: "https://github.com/tuanphuc2004/TP91tool",
     skill_markdown: null,
@@ -105,6 +108,7 @@ export const SEED_CATALOG_ITEMS: CatalogItem[] = [
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: "mkdir -p ~/.gemini/config/skills/design-taste-frontend && curl -sL https://github.com/tuanphuc2004/TP91tool -o SKILL.md",
     download_url: "https://github.com/tuanphuc2004/TP91tool",
     skill_markdown: `---
@@ -143,6 +147,7 @@ description: Anti-slop frontend skill for landing pages, portfolios, and clean s
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: "cp -r skills/supabase ~/.gemini/config/skills/supabase",
     download_url: "https://github.com/tuanphuc2004/TP91tool",
     skill_markdown: `---
@@ -180,6 +185,7 @@ description: Guidelines for Next.js 16 App Router with Supabase Free SSR, proxy.
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: "git clone https://github.com/tuanphuc2004/TP91tool.git",
     download_url: "https://github.com/tuanphuc2004/TP91tool",
     skill_markdown: `---
@@ -215,6 +221,7 @@ description: Plugin bundle combining Next.js, shadcn/ui, Supabase, and Vercel CL
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: null,
     download_url: null,
     skill_markdown: null,
@@ -243,6 +250,7 @@ description: Plugin bundle combining Next.js, shadcn/ui, Supabase, and Vercel CL
     ],
     demo_key: null,
     demo_url: null,
+    banner_url: null,
     install_command: "npx tsx scripts/seo-audit.ts",
     download_url: "https://github.com/tuanphuc2004/TP91tool",
     skill_markdown: `---

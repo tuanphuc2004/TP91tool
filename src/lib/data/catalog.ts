@@ -55,6 +55,7 @@ function normalizeCatalogRow(row: Record<string, unknown>): CatalogItem {
     features,
     demo_key: (row.demo_key as DemoKey | null) ?? null,
     demo_url: row.demo_url ? String(row.demo_url) : null,
+    banner_url: row.banner_url ? String(row.banner_url) : null,
     install_command: row.install_command ? String(row.install_command) : null,
     download_url: row.download_url ? String(row.download_url) : null,
     skill_markdown: row.skill_markdown ? String(row.skill_markdown) : null,
